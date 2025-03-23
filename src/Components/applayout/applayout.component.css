@@ -1,0 +1,19 @@
+.logo{
+    width: 80px;
+    height: 80px;
+    margin: 0px 1px 0px 1px !important;
+    display: block;
+    margin-top: 50px;
+}
+.app-bar{
+    background-color: #3f51b5;
+    color: white;
+    padding: 10px;
+    display: flex;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    justify-content: space-between;
+    height: 100px;
+    margin-bottom: 45px !important;
+}

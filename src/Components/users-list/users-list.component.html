@@ -1,0 +1,41 @@
+
+@if(getAuthServiceRole() == "admin") {
+    <button pButton label="Add User" icon="pi pi-plus" class="icon-button p-button-success add-user-btn" (click)="add()"></button>
+}
+
+<div class="card user-table-container">
+    <p-table [value]="users" [tableStyle]="{'min-width': '60rem'}" [paginator]="true" [rows]="5">
+        <ng-template pTemplate="header">
+            <tr>
+                <th pSortableColumn="name">
+                    Name <p-sortIcon field="name"></p-sortIcon>
+                </th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Edit</th>
+                <th>Delete</th>
+                <th>More Details</th>
+            </tr>
+        </ng-template>
+        
+        <ng-template pTemplate="body" let-user let-rowIndex="rowIndex">
+            <tr [ngClass]="{ 'even-row': rowIndex % 2 === 0, 'odd-row': rowIndex % 2 !== 0 }">
+                <td>{{ user.name }}</td>
+                <td>{{ user.email }}</td>
+                <td>{{ user.role }}</td>
+                <td>
+                    <button pButton icon="pi pi-pencil" class="icon-button p-button-rounded p-button-info" (click)="updateUser(user)"><i class="pi pi-pencil"></i></button>
+                </td>
+                <td>
+                    <button pButton icon="pi pi-trash" class="icon-button p-button-rounded p-button-danger" (click)="deleteUser(user.id)"><i class="pi pi-trash"></i></button>
+                </td>
+                <td>
+                    <button pButton icon="pi pi-eye" class="icon-button p-button-rounded p-button-secondary" (click)="showUserDetails(user.id)"><i class="pi pi-eye"></i></button>
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+    <a routerLink="/" class="user-card">
+        <mat-icon class="arrow-icon">arrow_back</mat-icon>
+    </a>
+</div>
