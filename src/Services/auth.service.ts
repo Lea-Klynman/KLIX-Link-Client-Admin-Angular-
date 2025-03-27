@@ -2,12 +2,13 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { partOfUser, User } from '../Models/user';
+import { environment } from './environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  private apiUrl = 'http://localhost:3000/api/Auth';
+  private apiUrl = `${environment.apiUrl}/api/Auth`;
   public isAuth: boolean = false;
   public userId: number = 0;
   public role: string = "";

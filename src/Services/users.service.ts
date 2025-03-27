@@ -4,13 +4,14 @@ import { User } from '../Models/user';
 import { HttpClient } from '@angular/common/http';
 import { AuthService } from './auth.service';
 import { Roles } from '../Models/roles';
+import { environment } from './environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UsersService {
 
-  private apiUrl = 'http://localhost:3000/api/User';
+  private apiUrl = `${environment.apiUrl}/api/User`;
   private usersBehaviorSubject = new BehaviorSubject<User[]>([]);
   public users$: Observable<User[]> = this.usersBehaviorSubject.asObservable();
 

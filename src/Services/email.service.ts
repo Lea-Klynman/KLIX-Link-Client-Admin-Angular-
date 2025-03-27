@@ -2,13 +2,14 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { EmailRequest } from '../Models/EmailRequest';
+import { environment } from './environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class EmailService {
 
-  private apiUrl = 'http://localhost:3000/api/Email'; // עדכני לפי הכתובת בפועל
+  private apiUrl = `${environment.apiUrl}/api/Email`; 
 
   constructor(private http: HttpClient) { }
 
