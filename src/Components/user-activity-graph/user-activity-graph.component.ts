@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { Chart, registerables } from 'chart.js';
 import { UserActivityService } from '../../Services/user-activity.service';
+import { Chart, registerables } from 'chart.js';
+
 @Component({
   selector: 'app-user-activity-graph',
   standalone: true,
@@ -89,3 +90,4 @@ export class UserActivityGraphComponent implements OnInit {
     });
   }
 }
+

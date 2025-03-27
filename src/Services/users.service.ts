@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
+import { User } from '../Models/user';
 import { HttpClient } from '@angular/common/http';
 import { AuthService } from './auth.service';
-import { User } from '../Models/user';
+import { Roles } from '../Models/roles';
 
 @Injectable({
   providedIn: 'root'
@@ -39,7 +40,12 @@ export class UsersService {
 
   //PUT enabel user
   enableUser(id: number): Observable<void> {
-    return this.http.put<void>(`${this.apiUrl}/${id}/enableuser`,null).pipe(tap(() => this.getUsers()));
+    return this.http.put<void>(`${this.apiUrl}/enable/${id}`,null).pipe(tap(() => this.getUsers()));
+  }
+
+  //PUT disabel user
+  disableUser(id: number): Observable<void> {
+    return this.http.put<void>(`${this.apiUrl}/disable/${id}`,null).pipe(tap(() => this.getUsers()));
   }
 
   // PUT update user name by ID

@@ -1,24 +1,32 @@
 import { Component, inject } from '@angular/core';
 import { User } from '../../Models/user';
+import { UsersService } from '../../Services/users.service';
 import { AuthService } from '../../Services/auth.service';
 import { Router, RouterLink } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { TableModule } from 'primeng/table';
+import { DialogModule } from 'primeng/dialog';
+import { ButtonModule } from 'primeng/button';
 import { CommonModule } from '@angular/common';
-import { UsersService } from '../../Services/user.service';
+import { TextareaModule } from 'primeng/textarea';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-users-list',
   standalone: true,
-  imports: [CommonModule,TableModule, RouterLink, MatIconModule],
+  imports: [CommonModule, TableModule, RouterLink, MatIconModule, DialogModule, ButtonModule,TextareaModule,FormsModule],
   templateUrl: './users-list.component.html',
   styleUrl: './users-list.component.css'
 })
 export class UsersListComponent {
   users!: User[];
   router = inject(Router);
-  
-  constructor(private userService: UsersService, private authService: AuthService) {}
+  displayDialog: boolean = false;
+  selectedUserId!: number;
+  actionType!: string;
+  message: string = '';
+
+  constructor(private userService: UsersService, private authService: AuthService) { }
 
   ngOnInit() {
     this.userService.getUsers();
@@ -32,19 +40,61 @@ export class UsersListComponent {
     return this.authService.role;
   }
 
-  updateUser(user: User) {
-    this.router.navigate(['/update-user', user.id]);
+
+  unblockUser(id: number) {
+    this.userService.enableUser(id).subscribe({
+      next: () => {
+        alert('User enabled');
+        this.userService.getUsers();
+      },
+      error: (err) => {
+        console.error(err);
+      },
+    });
+  }
+  blockUser(id: number) {
+    this.userService.disableUser(id).subscribe({
+      next: () => {
+        alert('User blocked');
+        this.userService.getUsers();
+      },
+      error: (err) => {
+        console.error(err);
+      },
+    });
+  }
+  
+  sendEmail(id:number): void {
+    this.router.navigate(['/send-email', id]);
   }
 
-  showUserDetails(userId: number) {
-    this.router.navigate(['/user-details', userId]);
+  openConfirmationDialog(userId: number, action: 'block' | 'unblock') {
+    this.selectedUserId = userId;
+    this.actionType = action === 'block' ? 'block' : 'unblock';
+    this.displayDialog = true;
   }
 
-  deleteUser(id: number) {
-    this.userService.deleteUser(id);
-    console.log("Deleted user");
+  confirmAction() {
+    if (this.actionType === 'block') {
+      this.userService.disableUser(this.selectedUserId).subscribe({
+        next: () => {
+          this.sendEmail(this.selectedUserId);
+          this.userService.getUsers();
+        },
+        error: (err) => console.error(err),
+      });
+    } else {
+      this.userService.enableUser(this.selectedUserId).subscribe({
+        next: () => {
+          this.sendEmail(this.selectedUserId);
+          this.userService.getUsers();
+        },
+        error: (err) => console.error(err),
+      });
+    }
+    this.displayDialog = false;
   }
-  add(){
-    
-  }
+
+  
 }
+

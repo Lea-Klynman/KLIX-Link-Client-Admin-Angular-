@@ -7,12 +7,15 @@ import { partOfUser, User } from '../Models/user';
   providedIn: 'root'
 })
 export class AuthService {
-
-  constructor(private http: HttpClient) {}
   private apiUrl = 'http://localhost:3000/api/Auth';
   public isAuth: boolean = false;
   public userId: number = 0;
   public role: string = "";
+  public token: string | null = null;
+  private sessionTimeout: any;
+  constructor(private http: HttpClient) {}
+ 
+
 
   register(user: User): Observable<any> {
     return this.http.post(`${this.apiUrl}/register`, user); // שינוי - שולח רק user
@@ -39,5 +42,12 @@ export class AuthService {
   logout() {
     sessionStorage.removeItem('adminToken');
     sessionStorage.removeItem('user');
+    this.token=null;  
+    this.isAuth=false;
+    this.role = '';
+    this.userId = 0;
+
   }
+
+ 
 }

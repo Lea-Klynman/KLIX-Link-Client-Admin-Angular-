@@ -6,6 +6,8 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class UserActivityService {
+
+
   private apiUrl = 'http://localhost:3000/api/UserActivity'; // שים כאן את ה-URL של ה-API שלך
 
   constructor(private http: HttpClient) {}

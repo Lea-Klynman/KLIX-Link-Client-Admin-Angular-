@@ -1,0 +1,53 @@
+:host ::ng-deep .p-dialog-mask {
+    background-color: rgba(0, 0, 0, 0.75) !important;
+}
+
+:host ::ng-deep .p-dialog {
+    background-color: white !important;
+    width: 700px !important;
+    height: 300px !important;
+    padding: 20px !important;
+    border-radius: 15px !important;
+}
+
+.p-dialog-footer button {
+    margin-right: 10px;
+    /* מרווח בין הכפתורים */
+}
+
+.user-table-container {
+    width: 1000px;
+    margin: 15px;
+
+}
+
+.odd-row {
+    background-color: white;
+}
+
+.even-row {
+    background-color: #759a99;
+    /* צבע בהיר של ה-Primary */
+
+}
+
+.col {
+    margin: 10px;
+    padding: 20px;
+}
+
+.icon-button {
+    background-color: transparent;
+    border: 1px solid transparent;
+    width: 35px;
+    cursor: pointer;
+    color: var(--icon-color);
+    font-size: 20px;
+    margin: 10px;
+
+}
+.title{
+    color: var(--icon-color);
+    font-size: 20px;
+    font-weight: bold;
+}
