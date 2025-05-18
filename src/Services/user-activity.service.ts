@@ -1,7 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { environment } from './environment';
+import { environment } from '../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -9,7 +9,7 @@ import { environment } from './environment';
 export class UserActivityService {
 
 
-  private apiUrl = `${environment.apiUrl}/api/UserActivity`; // שים כאן את ה-URL של ה-API שלך
+  private apiUrl = `${environment.apiUrl}/api/UserActivity`; 
 
   constructor(private http: HttpClient) {}
 

@@ -1,0 +1,251 @@
+
+<mat-toolbar color="primary">
+  <button mat-icon-button aria-label="Menu">
+    <mat-icon>menu</mat-icon>
+  </button>
+  <span>Mail Inbox</span>
+  
+  <div class="search-field">
+    <mat-form-field appearance="outline">
+      <mat-icon matPrefix>search</mat-icon>
+      <input matInput placeholder="Search emails" [(ngModel)]="searchQuery" (input)="searchEmails()">
+      <button *ngIf="searchQuery" matSuffix mat-icon-button aria-label="Clear" (click)="clearSearch()">
+        <mat-icon>close</mat-icon>
+      </button>
+    </mat-form-field>
+  </div>
+  
+  <span class="toolbar-spacer"></span>
+  
+  <button mat-icon-button aria-label="Settings">
+    <mat-icon>settings</mat-icon>
+  </button>
+  
+  <button mat-icon-button aria-label="Help">
+    <mat-icon>help_outline</mat-icon>
+  </button>
+  
+  <button mat-icon-button aria-label="User profile">
+    <mat-icon>account_circle</mat-icon>
+  </button>
+</mat-toolbar>
+
+<div class="inbox-container">
+  <div class="email-list-container">
+    <div class="email-list-header">
+      <h2>Inbox <mat-icon *ngIf="getUnreadCount() > 0" matBadge="{{getUnreadCount()}}" matBadgeColor="accent">mail</mat-icon></h2>
+      <button mat-icon-button color="primary" (click)="refreshInbox()" matTooltip="Refresh inbox" class="refresh-button">
+        <mat-icon>refresh</mat-icon>
+      </button>
+    </div>
+    
+    <div class="email-list">
+      @if (loading && emails.length === 0) {
+        <div class="loading-spinner">
+          <mat-spinner diameter="40"></mat-spinner>
+        </div>
+      } @else if (filteredEmails.length === 0) {
+        <div class="empty-state">
+          <mat-icon>inbox</mat-icon>
+          <h3>No emails found</h3>
+          <p>Your inbox is empty or no emails match your search</p>
+        </div>
+      } @else {
+        @for (email of filteredEmails; track email.id) {
+          <div 
+            class="email-item" 
+            [class.selected]="selectedEmail?.id === email.id"
+            (click)="selectEmail(email)"
+          >
+            <div class="email-item-content">
+              <div class="email-item-header">
+                <div class="email-from" [style.fontWeight]="email.isRead ? '400' : '500'">
+                  @if (!email.isRead) {
+                    <span class="unread-indicator"></span>
+                  }
+                  {{ email.from }}
+                </div>
+                <div class="email-time">{{ getFormattedDate(email.date) }}</div>
+              </div>
+              <div class="email-subject" [style.fontWeight]="email.isRead ? '400' : '500'">
+                {{ email.subject }}
+              </div>
+              <div class="email-preview">
+                {{ email.body.substring(0, 60) }}{{ email.body.length > 60 ? '...' : '' }}
+              </div>
+            </div>
+            <button mat-icon-button color="warn" (click)="deleteEmail(email, $event)" matTooltip="Delete email">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </div>
+        }
+      }
+    </div>
+  </div>
+
+  @if (selectedEmail) {
+    <div class="email-details">
+      <div class="email-details-header">
+        <div>
+          <h1 class="email-details-subject">{{ selectedEmail.subject }}</h1>
+          <div class="email-details-meta">
+            <div class="avatar">{{ getInitials(selectedEmail.from) }}</div>
+            <div>
+              <div><strong>{{ selectedEmail.from }}</strong></div>
+              <div>to me <mat-icon>arrow_drop_down</mat-icon></div>
+            </div>
+          </div>
+        </div>
+        <div class="email-details-actions">
+          <button mat-icon-button matTooltip="Archive">
+            <mat-icon>archive</mat-icon>
+          </button>
+          <button mat-icon-button matTooltip="Report spam">
+            <mat-icon>report</mat-icon>
+          </button>
+          <button mat-icon-button matTooltip="Delete" (click)="deleteEmail(selectedEmail)">
+            <mat-icon>delete</mat-icon>
+          </button>
+          <button mat-icon-button [matMenuTriggerFor]="menu" matTooltip="More options">
+            <mat-icon>more_vert</mat-icon>
+          </button>
+          <mat-menu #menu="matMenu">
+            <button mat-menu-item>
+              <mat-icon>mark_as_unread</mat-icon>
+              <span>Mark as unread</span>
+            </button>
+            <button mat-menu-item>
+              <mat-icon>label</mat-icon>
+              <span>Add label</span>
+            </button>
+            <button mat-menu-item>
+              <mat-icon>forward</mat-icon>
+              <span>Forward</span>
+            </button>
+          </mat-menu>
+        </div>
+      </div>
+
+      <div class="email-body">
+        {{ selectedEmail.body }}
+      </div>
+
+      <div class="reply-container">
+        <h3>Reply</h3>
+        <mat-form-field appearance="outline" class="reply-box">
+          <mat-label>Your reply</mat-label>
+          <textarea 
+            matInput 
+            [(ngModel)]="replyText" 
+            rows="5" 
+            placeholder="Type your reply here..."
+          ></textarea>
+        </mat-form-field>
+
+        <div class="reply-actions">
+          <button 
+            mat-stroked-button 
+            color="primary" 
+            (click)="replyText = ''"
+            [disabled]="!replyText.trim()"
+          >
+            Discard
+          </button>
+          <button 
+            mat-flat-button 
+            color="primary" 
+            (click)="sendReply()"
+            [disabled]="!replyText.trim() || loading"
+          >
+            <mat-icon>send</mat-icon>
+            Send
+          </button>
+        </div>
+      </div>
+    </div>
+  } @else {
+    <div class="email-details empty-state">
+      <mat-icon>email</mat-icon>
+      <h2>No email selected</h2>
+      <p>Select an email from the list to view its contents</p>
+    </div>
+  }
+</div>
+
+<button 
+  mat-raised-button 
+  color="primary" 
+  class="compose-button"
+  (click)="openComposeDialog()"
+>
+  <mat-icon>edit</mat-icon>
+  compose
+</button>
+
+@if (showComposeDialog) {
+  <div class="compose-backdrop" (click)="closeComposeDialog()"></div>
+  <div class="compose-dialog">
+    <div class="compose-header">
+      <h3>New Massage </h3>
+      <div class="compose-header-actions">
+        <button mat-icon-button (click)="minimizeComposeDialog()" matTooltip="Minimize">
+          <mat-icon>remove</mat-icon>
+        </button>
+        <button mat-icon-button (click)="maximizeComposeDialog()" matTooltip="Maximize">
+          <mat-icon>open_in_full</mat-icon>
+        </button>
+        <button mat-icon-button (click)="closeComposeDialog()" matTooltip="Close">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+    </div>
+    
+    <div class="compose-body">
+      <mat-form-field appearance="outline">
+        <mat-label>To</mat-label>
+        <input matInput [(ngModel)]="newEmail.to" placeholder="To">
+      </mat-form-field>
+      
+      <mat-form-field appearance="outline">
+        <mat-label>Subject</mat-label>
+        <input matInput [(ngModel)]="newEmail.subject" placeholder="Subject ">
+      </mat-form-field>
+      
+      <mat-form-field appearance="outline">
+        <mat-label>Content</mat-label>
+        <textarea 
+          matInput 
+          [(ngModel)]="newEmail.body" 
+          rows="10" 
+          placeholder="Enter the email content here..."
+        ></textarea>
+      </mat-form-field>
+    </div>
+    
+    <div class="compose-actions">
+      <div>
+        <button mat-icon-button matTooltip=" Attach file">
+          <mat-icon>attach_file</mat-icon>
+        </button>
+        <button mat-icon-button matTooltip=" Insert photo">
+          <mat-icon>insert_photo</mat-icon>
+        </button>
+      </div>
+      
+      <div>
+        <button mat-button (click)="closeComposeDialog()">
+          Cancel
+        </button>
+        <button 
+          mat-raised-button 
+          color="primary" 
+          (click)="sendNewEmail()"
+          [disabled]="loading"
+        >
+          <mat-icon>send</mat-icon>
+          Send
+        </button>
+      </div>
+    </div>
+  </div>
+}

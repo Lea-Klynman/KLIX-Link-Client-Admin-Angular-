@@ -6,6 +6,7 @@ import { UsersListComponent } from '../Components/users-list/users-list.componen
 import { DashboardComponent } from '../Components/dashboard/dashboard.component';
 import { SendEmailComponent } from '../Components/send-email/send-email.component';
 import { AboutComponent } from '../Components/about/about.component';
+import { InboxComponent } from '../Components/inbox/inbox.component';
 
 export const routes: Routes = [
     {
@@ -13,7 +14,8 @@ export const routes: Routes = [
             {path:'',component:AboutComponent},
             {path:'dashboard',component:DashboardComponent},
             { path: 'users', component: UsersListComponent },
-            { path: 'send-email/:userId', component: SendEmailComponent }        
+            { path: 'send-email/:userId', component: SendEmailComponent } ,
+            { path: 'inbox', component: InboxComponent }       
             ]
     },
     {path:'login',component:LoginComponent},
