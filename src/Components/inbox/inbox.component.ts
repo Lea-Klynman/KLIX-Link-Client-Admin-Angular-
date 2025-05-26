@@ -1,7 +1,6 @@
 
 import { Component, type OnInit } from "@angular/core"
 import type { EmailMessage } from "../../Models/EmailMessage"
-
 import type { EmailRequest } from "../../Models/EmailRequest"
 import { MatIconModule } from "@angular/material/icon"
 import { MatListModule } from "@angular/material/list"
@@ -16,7 +15,6 @@ import { MatTooltipModule } from "@angular/material/tooltip"
 import { MatMenuModule } from "@angular/material/menu"
 import { MatBadgeModule } from "@angular/material/badge"
 import { CommonModule } from "@angular/common"
-import { DatePipe } from "@angular/common"
 import { finalize } from "rxjs/operators"
 import { EmailService } from "../../Services/email.service"
 import { MatSnackBar } from "@angular/material/snack-bar"
@@ -51,7 +49,6 @@ export class InboxComponent implements OnInit {
   loading = false
   searchQuery = ""
 
-  // Add these properties to the InboxComponent class
   showComposeDialog = false
   newEmail: EmailRequest = {
     to: "",
@@ -125,6 +122,7 @@ export class InboxComponent implements OnInit {
           panelClass: "success-snackbar",
         })
         this.replyText = ""
+        this.selectedEmail = undefined
       })
   }
 
@@ -193,17 +191,14 @@ export class InboxComponent implements OnInit {
     const date = new Date(dateString)
     const today = new Date()
 
-    // If the email is from today, show only the time
     if (date.toDateString() === today.toDateString()) {
       return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
     }
 
-    // If the email is from this year, show the month and day
     if (date.getFullYear() === today.getFullYear()) {
       return date.toLocaleDateString([], { month: "short", day: "numeric" })
     }
 
-    // Otherwise show the full date
     return date.toLocaleDateString([], { year: "numeric", month: "short", day: "numeric" })
   }
 
@@ -211,7 +206,6 @@ export class InboxComponent implements OnInit {
     return this.emails.filter((email) => !email.isRead).length
   }
 
-  // Add these methods to the InboxComponent class
   openComposeDialog(): void {
     this.showComposeDialog = true
     this.newEmail = {
@@ -226,14 +220,12 @@ export class InboxComponent implements OnInit {
   }
 
   minimizeComposeDialog(): void {
-    // In a real app, this would minimize the dialog
-    // For now, we'll just close it
+
     this.closeComposeDialog()
   }
 
   maximizeComposeDialog(): void {
-    // In a real app, this would maximize the dialog
-    // This is just a placeholder
+    this.showComposeDialog = true
   }
 
   sendNewEmail(): void {
